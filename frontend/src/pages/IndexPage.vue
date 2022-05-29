@@ -1,21 +1,5 @@
 <template>
   <q-page>
-    <!-- <div class="q-mt-md">
-      <q-fab
-        v-model="fab2"
-        vertical-actions-align="left"
-        color="purple"
-        icon="keyboard_arrow_down"
-        direction="down"
-      >
-        <q-fab-action color="primary" @click="onClick" icon="mail" label="Email" />
-        <q-fab-action color="secondary" @click="onClick" icon="alarm" label="Alarm" />
-        <q-fab-action color="orange" @click="onClick" icon="airplay" label="Airplay" />
-        <q-fab-action color="accent" @click="onClick" icon="room" label="Map" />
-      </q-fab>
-      Corso Sebastopoli, 123, 10134 Torino TO, Italy
-    </div> -->
-
     <GMapMap
       class="vuemap"
       :center="center"
@@ -45,7 +29,8 @@
       </GMapCluster>
 
       <q-page-sticky class="menu" position="top-right" :offset="[18, 18]">
-        <q-btn fab icon="add" color="accent" />
+        <q-btn fab icon="add" color="accent" @click="geoloc()" />
+       
       </q-page-sticky>
 
       <q-page-sticky class="menu" position="bottom-left" :offset="[18, 18]">
@@ -59,20 +44,12 @@
 <script>
 import { defineComponent } from "vue";
 import { setupContainsLatLng } from "../util/is-point-within-polygon.js";
-// const myMapRef = ref();
-// const mapPolygon = ref();
-
 export default defineComponent({
   name: "IndexPage",
-  //45.04186784168281, 7.650031561340386
-
-  //45.043549336965455, 7.649626494451973
-  // 45.04265135308057, 7.652168289176769
-  // 45.0401684079395, 7.650603718320271
-  // 45.041109363807095, 7.6478745801595815
   data() {
     return {
       center: { lat: 45.041, lng: 7.65 },
+      location: "",
       zoom: 17,
       paths: [
         { lat: 45.043549336965455, lng: 7.649626494451973 },
@@ -109,7 +86,6 @@ export default defineComponent({
         rotateControl: true,
         fullscreenControl: false,
         styles: [
-          // here comes the styles your
           {
             elementType: "labels.icon",
             stylers: [
@@ -129,12 +105,65 @@ export default defineComponent({
           },
         ],
       },
+
+      latUser: 0,
+      longUser: 0,
     };
   },
 
+  computed: {
+  },
+
   methods: {
+
+    trackPosition() {
+      if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(this.successPosition, this.failurePosition, {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0,
+        })
+      } else {
+        alert(`Browser doesn't support Geolocation`)
+      }
+    },
+
+    successPosition: function(position) {
+      this.markers[0].position.lat = position.coords.latitude;
+      this.markers[0].position.lng = position.coords.longitude;
+
+      //set marker to new locatio
+      this.$refs.mapPolygon.$polygonPromise.then((res) => {
+          let isWithinPolygon = res.containsLatLng(
+            position.coords.latitude,
+            position.coords.longitude
+          );
+          console.log({ isWithinPolygon });
+        });
+    },
+
+    failurePosition: function(err) {
+      alert('Error Code: ' + err.code + ' Error Message: ' + err.message)
+    },
+
+    geoloc() {
+      var onSuccess = function (position) {
+
+        console.log("POSITION: ", position);
+      };
+
+      function onError(error) {
+        console.log(
+          "code: " + error.code + "\n" + "message: " + error.message + "\n"
+        );
+      }
+      var options = { enableHighAccuracy: true };
+
+      navigator.geolocation.getCurrentPosition(onSuccess, onError, options);
+      console.log("called :", this.location);
+    },
+
     handleClick(event) {
-      // const mapPolygon = ref();
       if (event.latLng?.lat) {
         console.log(
           "event.latLng.lat(), event.latLng.lng()",
@@ -142,8 +171,7 @@ export default defineComponent({
           event.latLng.lng()
         );
         this.$refs.mapPolygon.$polygonPromise.then((res) => {
-
-          console.log(res)
+          console.log(res);
           let isWithinPolygon = res.containsLatLng(
             event.latLng.lat(),
             event.latLng.lng()
@@ -157,9 +185,13 @@ export default defineComponent({
     },
     zoomOut() {
       this.zoom -= 0.5;
-    },
+    }
+  },
+  created() {
   },
   mounted() {
+
+    this.trackPosition()
     this.$refs.myMapRef.$mapPromise.then(() => {
       setupContainsLatLng();
     });
