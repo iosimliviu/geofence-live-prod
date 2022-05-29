@@ -1,12 +1,15 @@
 <template>
   <q-page>
-    <div >
       <GMapMap
          class="vuemap"
         :center="center"
         :zoom="10"
         map-type-id="terrain"
       >
+
+      <GMapPolygon
+        :paths="paths"
+    />
         <GMapCluster 
         :zoomOnClick="true"
        >
@@ -20,7 +23,6 @@
           />
         </GMapCluster>
       </GMapMap>
-    </div>
   </q-page>
 </template>
 
@@ -31,13 +33,12 @@ export default defineComponent({
   name: 'IndexPage',
   data() {
     return {
-      // geofence: Geofence,
-      counter: 0,
-      info: 'a',
-      center : { 
-        lat: 51.093048, 
-        lng: 6.84212 
-      },
+      center: {lat: 25.774, lng: -80.19},
+      paths: [
+        { lat: 25.774, lng: -80.19 },
+        { lat: 18.466, lng: -66.118 },
+        { lat: 32.321, lng: -64.757 },
+      ],
       markers : [
         {
           position: {
@@ -46,8 +47,6 @@ export default defineComponent({
           },
         }
       ],
-      address: '',
-      state: '',
     }
   },
 })
