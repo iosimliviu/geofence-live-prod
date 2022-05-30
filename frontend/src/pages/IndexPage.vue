@@ -24,18 +24,30 @@
           :position="m.position"
           :clickable="true"
           :draggable="true"
+          :icon="{
+            url: 'http://maps.google.com/mapfiles/ms/micons/yellow.png',
+            scaledSize: { width: 77, height: 77 },
+          }"
           @click="center = m.position"
         />
       </GMapCluster>
 
       <q-page-sticky class="menu" position="top-right" :offset="[18, 18]">
-        <q-btn fab icon="add" color="accent" @click="geoloc()" />
-       
+        <q-fab icon="eva-menu-2" direction="down" class="glass transparent">
+          <q-fab-action @click="onClick" color="primary" icon="person_add" />
+          <q-fab-action @click="onClick" color="primary" icon="mail" />
+        </q-fab>
+        <!-- <q-btn fab icon="add" color="accent" @click="geoloc()" /> -->
       </q-page-sticky>
 
       <q-page-sticky class="menu" position="bottom-left" :offset="[18, 18]">
-        <q-btn fab icon="add" color="accent" @click="zoomIn" />
-        <q-btn fab icon="dash" color="accent" @click="zoomOut" />
+        <q-btn fab class="glass transparent" icon="eva-plus" @click="zoomIn" />
+        <q-btn
+          fab
+          class="glass transparent"
+          icon="eva-minus"
+          @click="zoomOut"
+        />
       </q-page-sticky>
     </GMapMap>
   </q-page>
@@ -68,6 +80,9 @@ export default defineComponent({
             lat: 51.093048,
             lng: 6.84212,
           },
+        },
+        {
+          position: { lat: 45.043549336965455, lng: 7.649626494451973 },
         },
       ],
       optPol: {
@@ -111,44 +126,46 @@ export default defineComponent({
     };
   },
 
-  computed: {
-  },
+  computed: {},
 
   methods: {
-
     trackPosition() {
       if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(this.successPosition, this.failurePosition, {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 0,
-        })
+        navigator.geolocation.watchPosition(
+          this.successPosition,
+          this.failurePosition,
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0,
+          }
+        );
       } else {
-        alert(`Browser doesn't support Geolocation`)
+        alert(`Browser doesn't support Geolocation`);
       }
     },
 
-    successPosition: function(position) {
+    successPosition: function (position) {
       this.markers[0].position.lat = position.coords.latitude;
       this.markers[0].position.lng = position.coords.longitude;
 
-      //set marker to new locatio
-      this.$refs.mapPolygon.$polygonPromise.then((res) => {
+      if (this.$refs.mapPolygon !== null) {
+        this.$refs.mapPolygon.$polygonPromise.then((res) => {
           let isWithinPolygon = res.containsLatLng(
             position.coords.latitude,
             position.coords.longitude
           );
           console.log({ isWithinPolygon });
         });
+      }
     },
 
-    failurePosition: function(err) {
-      alert('Error Code: ' + err.code + ' Error Message: ' + err.message)
+    failurePosition: function (err) {
+      // alert("Error Code: " + err.code + " Error Message: " + err.message);
     },
 
     geoloc() {
       var onSuccess = function (position) {
-
         console.log("POSITION: ", position);
       };
 
@@ -185,13 +202,11 @@ export default defineComponent({
     },
     zoomOut() {
       this.zoom -= 0.5;
-    }
+    },
   },
-  created() {
-  },
+  created() {},
   mounted() {
-
-    this.trackPosition()
+    this.trackPosition();
     this.$refs.myMapRef.$mapPromise.then(() => {
       setupContainsLatLng();
     });
@@ -206,5 +221,12 @@ export default defineComponent({
 }
 .vuemap {
   height: 100vh;
+}
+
+.glass {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  background-color: rgba(17, 25, 40, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.125);
 }
 </style>
