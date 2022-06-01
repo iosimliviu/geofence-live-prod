@@ -33,6 +33,19 @@
           @click="center = m.position"
         />
       </GMapCluster>
+      <GMapMarker
+          :key="index"
+          v-for="(m, index) in polygonAddMarkers"
+          :position="m.position"
+          :clickable="true"
+          :draggable="false"
+          :icon="{
+            url: 'https://svgshare.com/i/hsy.svg',
+            scaledSize: { width: 40, height: 40 },
+          }"
+          @click="center = m.position"
+        />
+
 
       <q-page-sticky class="menu" position="top-right" :offset="[18, 18]">
         <q-fab
@@ -74,7 +87,7 @@
             color="grey-2"
             text-color="black"
             icon="eva-home-outline"
-            @click="this.$router.push('/landing');"
+            @click="this.$router.push('/landing')"
           />
 
           <!-- this.$router.push("/"); -->
@@ -223,7 +236,11 @@
           <q-btn
             @click="addPath()"
             class="q-mr-lg roundCorners col"
-            :label="this.defaultPolygon.paths[0].lat === 0 || isChoosing ? 'Choose Point': 'Add Path'"
+            :label="
+              this.defaultPolygon.paths[0].lat === 0 || isChoosing
+                ? 'Choose Point'
+                : 'Add Path'
+            "
             color="secondary"
           />
 
@@ -231,7 +248,7 @@
             flat
             label="Cancel"
             color="primary"
-            @click="addWindow = false"
+            @click="cancelAdd()"
             v-close-popup
           />
           <q-btn
@@ -297,7 +314,7 @@ export default defineComponent({
               lat: 45.04174697510173,
               lng: 7.649631643472636,
             },
-            
+
             {
               lat: 45.04125842605727,
               lng: 7.649622106929561,
@@ -403,16 +420,13 @@ export default defineComponent({
       ],
       markers: [
         {
-          position: {
-            lat: 51.093048,
-            lng: 6.84212,
-          },
-          icon: 'https://svgshare.com/i/hsy.svg',//red
+          position: { lat: 51.093048, lng: 6.84212 },
         },
         {
           position: { lat: 45.043549336965455, lng: 7.649626494451973 },
         },
       ],
+      polygonAddMarkers:[],
       optPol: {
         strokeColor: "#0000FF",
         strokeOpacity: 0.8,
@@ -458,24 +472,37 @@ export default defineComponent({
   },
 
   methods: {
-    toHome(){
+    toHome() {
       this.$router.push("/landing");
     },
     addPolygon() {
       this.polygons.push(this.defaultPolygon);
+      this.addWindow = false;
+      this.polygonAddMarkers.splice(-this.defaultPolygon.paths.length);
+    },
+    cancelAdd() {
+      this.addWindow = false;
+      this.polygonAddMarkers.splice(-this.defaultPolygon.paths.length);
+      this.defaultPolygon = {
+        name: "",
+        options: {
+          strokeColor: "#000",
+          fillColor: "#000",
+          fillOpacity: 0.35,
+          clickable: false,
+        },
+        paths: [{ lat: 0, lng: 0 }],
+      };
     },
     setPath(index, lat, lng) {
       this.defaultPolygon.paths[index].lat = lat;
       this.defaultPolygon.paths[index].lng = lng;
       console.log("this.defaultPolygo", this.defaultPolygon);
     },
-
     addPath() {
       this.isChoosing = true;
       this.defaultPolygon.paths.push({ lat: 0, lng: 0 });
       console.log("this.defaultPolygo", this.defaultPolygon);
-
-        
     },
     setMapTypeSat() {
       this.mapType = "satellite";
@@ -484,7 +511,7 @@ export default defineComponent({
       this.mapType = "map";
     },
     trackPosition() {
-      if (navigator.geolocation ) {
+      if (navigator.geolocation) {
         // navigator.geolocation.watchPosition(
         //   this.successPosition,
         //   this.failurePosition,
@@ -540,7 +567,7 @@ export default defineComponent({
       if (event.latLng?.lat) {
         this.latAddition = event.latLng.lat();
         this.lngAddition = event.latLng.lng();
-        this.markers.push({
+        this.polygonAddMarkers.push({
           position: { lat: event.latLng.lat(), lng: event.latLng.lng() },
         });
         this.isChoosing = false;
@@ -554,7 +581,7 @@ export default defineComponent({
             console.log("i", i);
             console.log(this.polygons[i]);
             console.log(
-              `Is within polygon ${this.polygons[i].name} : ${isWithinPolygon}`
+              `Logged in user Is within polygon ${this.polygons[i].name} : ${isWithinPolygon}`
             );
           });
         }
