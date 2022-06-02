@@ -298,7 +298,7 @@ export default defineComponent({
       },
       polygons: [
         {
-          name: "",
+          name: "Green",
           options: {
             strokeColor: "#117a01",
             fillColor: "#117a01",
@@ -326,7 +326,7 @@ export default defineComponent({
           ],
         },
         {
-          name: "",
+          name: "Red",
           options: {
             strokeColor: "#b30000",
             fillColor: "#b30000",
@@ -360,7 +360,7 @@ export default defineComponent({
           ],
         },
         {
-          name: "",
+          name: "Yellow",
           options: {
             strokeColor: "#ffee00",
             fillColor: "#ffee00",
@@ -388,7 +388,7 @@ export default defineComponent({
           ],
         },
         {
-          name: "Guests",
+          name: "Blue",
           options: {
             strokeColor: "#0000FF",
             fillColor: "#0000FF",
@@ -404,7 +404,7 @@ export default defineComponent({
           ],
         },
         {
-          name: "Main Stage",
+          name: "Black",
           options: {
             strokeColor: "#000",
             fillColor: "#000",
@@ -512,34 +512,50 @@ export default defineComponent({
     },
     trackPosition() {
       if (navigator.geolocation) {
-        // navigator.geolocation.watchPosition(
-        //   this.successPosition,
-        //   this.failurePosition,
-        //   {
-        //     enableHighAccuracy: true,
-        //     timeout: 15000,
-        //     maximumAge: 0,
-        //   }
-        // );
+        navigator.geolocation.watchPosition(
+          this.successPosition,
+          this.failurePosition,
+          {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0,
+          }
+        );
       } else {
         alert(`Browser doesn't support Geolocation`);
       }
     },
 
-    successPosition: function (position) {
+    successPosition: async function (position) {
       this.markers[0].position.lat = position.coords.latitude;
       this.markers[0].position.lng = position.coords.longitude;
 
-      for (var i = 0; i < this.polygons.length; i++) {
-        if (this.$refs.mapPolygon[i] !== null) {
-          this.$refs.mapPolygon[i].$polygonPromise.then((res) => {
-            let isWithinPolygon = res.containsLatLng(
+
+      for (let i = 0; i < this.polygons.length-1; i++) {
+          // console.log("i - ",i)
+
+          // console.log("this.$refs.mapPolygon[i]",this.$refs.mapPolygon[i])
+          const res = await this.$refs.mapPolygon[i].$polygonPromise
+          console.log("res i",i,this.polygons[i].name,res.containsLatLng(
               position.coords.latitude,
               position.coords.longitude
-            );
-            console.log({ isWithinPolygon });
-          });
-        }
+            ));
+
+          
+      //     // .then((res) => {
+      //     //   let isWithinPolygon = res.containsLatLng(
+      //     //     position.coords.latitude,
+      //     //     position.coords.longitude
+      //     //   );
+      //     // this.$refs.mapPolygon[i].$polygonPromise.then((res) => {
+      //     //   let isWithinPolygon = res.containsLatLng(
+      //     //     position.coords.latitude,
+      //     //     position.coords.longitude
+      //     //   );
+      //       // console.log(this.polygons[i])
+      //       // console.log(i + " - Is within polygon "  + " : ", { isWithinPolygon });
+
+      //     // });
       }
     },
 

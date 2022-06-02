@@ -59,6 +59,8 @@ const createUser = async (req, res) => {
                 userName: userName,
                 email,
                 password,
+                lat:0,
+                lng:0,
                 isAdmin: false,
                 token: Math.random().toString(36)
             });
@@ -76,6 +78,36 @@ const createUser = async (req, res) => {
         });
     }
 }
+
+
+const updateUser = async (req, res) => {
+    try {
+      const { id } = req.params;
+      let lat = req.body.lat;
+      let lng = req.body.lng;
+  
+      const foundUser = await User.findOne({
+        where: {
+          id
+        }
+      });
+      if (!foundUser) {
+        res.status(400).send({ message: "user does not exist" });
+      }
+      else {
+        const updatedUser = await foundUser.update({
+          ...foundUser,
+          lat,
+          lng
+        });
+        res.status(200).send({ updatedUser, message: "user has been updated" });
+  
+      }
+    } catch (e) {
+      console.error(e);
+      res.status(500).send({ message: "server error" })
+    }
+  }
 
 const deleteUser = async (req, res) => {
     const userId = req.params.id;
@@ -107,5 +139,6 @@ module.exports = {
     getUserByEmail,
     getAllUsers,
     createUser,
+    updateUser,
     deleteUser
 };

@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
       password: DataTypes.STRING,
       token: DataTypes.STRING,
       isAdmin: DataTypes.BOOLEAN,
+      lat: DataTypes.DECIMAL(8, 6),
+      lng: DataTypes.DECIMAL(9, 6),
       registeredAt: "DATETIME",
       lastLogin: "DATETIME"
     })
