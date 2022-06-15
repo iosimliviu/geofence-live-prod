@@ -48,8 +48,6 @@ configure(app);
 
 module.exports = configure;
 
-
-
 const test = async (req, res) => {
 console.log("called test")
     res.status(200).send({ message: "Hello from server" });

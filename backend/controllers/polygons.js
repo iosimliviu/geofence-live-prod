@@ -3,7 +3,7 @@ const Path = require("../models/index").Path;
 
 const createPolygon = async (req, res) => {
     if (req.body.name && req.body.strokeColor && req.body.fillColor && req.body.fillOpacity && req.body.paths) {
-        const name = req.body.polygonText;
+        const name = req.body.name;
         const strokeColor = req.body.strokeColor;
         const fillColor = req.body.fillColor;
         const fillOpacity = req.body.fillOpacity;
@@ -13,7 +13,7 @@ const createPolygon = async (req, res) => {
         polygon.strokeColor = strokeColor;
         polygon.fillColor = fillColor;
         polygon.fillOpacity = fillOpacity;
-        polygon.projectId = req.params.projectId;
+        // polygon.projectId = req.params.projectId;
 
         await polygon.save();
 
@@ -94,6 +94,25 @@ const getAllPolygonsInProject = async (req, res) => {
     }
 }
 
+const getAllPolygons = async (req, res) => {
+    try {
+        const polygons = await Polygon.findAll({
+            raw:true
+        })
+        .then(async (polygonsFound) => {
+            for (let i = 0; i < polygonsFound.length; i++) {
+                polygonsFound[i].paths = await getAllPathsPolygon(polygonsFound[i].id)
+            }
+            return polygonsFound;
+        });
+
+        res.status(200).send(polygons);
+    } catch (e) {
+        console.error(e);
+        res.status(500).send({ message: "server error" });
+    }
+}
+
 const getAllPathsPolygon = async (id) => {
     const paths = await Path.findAll({
         where: {
@@ -110,5 +129,7 @@ module.exports = {
     createPolygon,
     deletePolygon,
     getAllPathsForPolygon,
-    getAllPolygonsInProject: getAllPolygonsInProject
+    getAllPolygonsInProject,
+    getAllPolygons
+    
 }

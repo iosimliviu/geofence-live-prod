@@ -37,7 +37,7 @@ const createUser = async (req, res) => {
         const password = req.body.password;
         const errors = [];
         if (!userName) {
-            errors.push("First name is empty");
+            errors.push("username is empty");
         }
         if (!email) {
             errors.push("Email is empty");

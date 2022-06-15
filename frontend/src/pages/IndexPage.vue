@@ -47,7 +47,7 @@
         />
 
 
-      <q-page-sticky class="menu" position="top-right" :offset="[18, 18]">
+      <!-- <q-page-sticky class="menu" position="top-right" :offset="[18, 18]">
         <q-fab
           icon="eva-menu-2"
           direction="down"
@@ -59,6 +59,7 @@
             color="grey-2"
             text-color="black"
             icon="eva-bell-outline"
+            @click="this.$router.push('/notifications')"
           />
           <q-fab-action
             color="grey-2"
@@ -90,10 +91,8 @@
             @click="this.$router.push('/landing')"
           />
 
-          <!-- this.$router.push("/"); -->
         </q-fab>
-        <!-- <q-btn fab icon="add" color="accent" @click="geoloc()" /> -->
-      </q-page-sticky>
+      </q-page-sticky> -->
 
       <q-page-sticky position="bottom-left">
         <q-card class="glass transparent controls">
@@ -267,6 +266,10 @@
 <script>
 import { defineComponent } from "vue";
 import { setupContainsLatLng } from "../util/is-point-within-polygon.js";
+
+// import { useQuasar } from 'quasar'
+
+// const $q = useQuasar;
 
 //https://svgshare.com/i/hsy.svg - red "#FF3A20"
 //https://svgshare.com/i/hsW.svg - dark purple
@@ -469,9 +472,26 @@ export default defineComponent({
     getMapType() {
       return this.mapType;
     },
+     
   },
 
   methods: {
+    notify (message) {
+        this.$q.notify({
+         progress: true,
+          message,
+          color: 'grey-2',
+          textColor: 'black',
+          position: 'top',
+          multiLine: true,
+          actions: [
+            { label: 'Dismiss', color: 'black', handler: () => { /* ... */ } }
+          ]
+        })
+
+        
+      },
+   
     toHome() {
       this.$router.push("/landing");
     },
@@ -531,32 +551,32 @@ export default defineComponent({
       this.markers[0].position.lng = position.coords.longitude;
 
 
-      for (let i = 0; i < this.polygons.length-1; i++) {
-          // console.log("i - ",i)
+      // for (let i = 0; i < this.polygons.length-1; i++) {
+      //     // console.log("i - ",i)
 
-          // console.log("this.$refs.mapPolygon[i]",this.$refs.mapPolygon[i])
-          const res = await this.$refs.mapPolygon[i].$polygonPromise
-          console.log("res i",i,this.polygons[i].name,res.containsLatLng(
-              position.coords.latitude,
-              position.coords.longitude
-            ));
+      //     // console.log("this.$refs.mapPolygon[i]",this.$refs.mapPolygon[i])
+      //     // const res = await this.$refs.mapPolygon[i].$polygonPromise
+      //     // console.log("res i",i,this.polygons[i].name,res.containsLatLng(
+      //     //     position.coords.latitude,
+      //     //     position.coords.longitude
+      //     //   ));
 
           
-      //     // .then((res) => {
-      //     //   let isWithinPolygon = res.containsLatLng(
-      //     //     position.coords.latitude,
-      //     //     position.coords.longitude
-      //     //   );
-      //     // this.$refs.mapPolygon[i].$polygonPromise.then((res) => {
-      //     //   let isWithinPolygon = res.containsLatLng(
-      //     //     position.coords.latitude,
-      //     //     position.coords.longitude
-      //     //   );
-      //       // console.log(this.polygons[i])
-      //       // console.log(i + " - Is within polygon "  + " : ", { isWithinPolygon });
+      // //     // .then((res) => {
+      // //     //   let isWithinPolygon = res.containsLatLng(
+      // //     //     position.coords.latitude,
+      // //     //     position.coords.longitude
+      // //     //   );
+      // //     // this.$refs.mapPolygon[i].$polygonPromise.then((res) => {
+      // //     //   let isWithinPolygon = res.containsLatLng(
+      // //     //     position.coords.latitude,
+      // //     //     position.coords.longitude
+      // //     //   );
+      // //       // console.log(this.polygons[i])
+      // //       // console.log(i + " - Is within polygon "  + " : ", { isWithinPolygon });
 
-      //     // });
-      }
+      // //     // });
+      // }
     },
 
     failurePosition: function (err) {
