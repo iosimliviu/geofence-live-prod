@@ -46,7 +46,9 @@
           @click="center = m.position"
         />
 
-
+<q-page-sticky class="menu" position="top-left" :offset="[18, 18]">
+  
+</q-page-sticky>
       <!-- <q-page-sticky class="menu" position="top-right" :offset="[18, 18]">
         <q-fab
           icon="eva-menu-2"

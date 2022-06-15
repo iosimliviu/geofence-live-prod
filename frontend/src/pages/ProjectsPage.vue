@@ -8,13 +8,14 @@
           class="my-card bg-grey-2"
         >
           <q-card-section class="text-black">
-            <div class="text"><span v-html="item.message"></span></div>
+            <div class="text">2<span v-html="item.message"></span></div>
           </q-card-section>
 
           <q-card-actions align="right">
             <q-btn icon="eva-trash-outline" color="red-8" flat></q-btn>
           </q-card-actions>
         </q-card>
+
       </div>
     </div>
   </div>
