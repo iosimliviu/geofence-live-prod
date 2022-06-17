@@ -34,21 +34,29 @@
         />
       </GMapCluster>
       <GMapMarker
-          :key="index"
-          v-for="(m, index) in polygonAddMarkers"
-          :position="m.position"
-          :clickable="true"
-          :draggable="false"
-          :icon="{
-            url: 'https://svgshare.com/i/hsy.svg',
-            scaledSize: { width: 40, height: 40 },
-          }"
-          @click="center = m.position"
-        />
+        :key="index"
+        v-for="(m, index) in polygonAddMarkers"
+        :position="m.position"
+        :clickable="true"
+        :draggable="false"
+        :icon="{
+          url: 'https://svgshare.com/i/hsy.svg',
+          scaledSize: { width: 40, height: 40 },
+        }"
+        @click="center = m.position"
+      />
 
-<q-page-sticky class="menu" position="top-left" :offset="[18, 18]">
-  
-</q-page-sticky>
+      <q-page-sticky class="menu" position="top-left" :offset="[18, 18]">
+        <q-btn
+          style="margin-right: 10px"
+          text-color="black"
+          color="grey-2"
+          @click="addWindow = true"
+          v-show="!addWindow"
+          rounded
+          >add</q-btn
+        >
+      </q-page-sticky>
       <!-- <q-page-sticky class="menu" position="top-right" :offset="[18, 18]">
         <q-fab
           icon="eva-menu-2"
@@ -103,25 +111,29 @@
               text-color="black"
               color="grey-2 col q-mr-sm q-ml-sm"
               icon="eva-minus"
-              @click="zoomOut"
+              @click="zoomOut; notify('Matthew Gonzales entered Production Stage at 20:31')"
+              rounded
             />
             <q-btn
               text-color="black"
               color="grey-2 col q-mr-sm q-ml-sm"
               icon="eva-plus"
               @click="zoomIn"
+              rounded
             />
             <q-btn
               text-color="black"
               color="grey-2 col q-mr-sm q-ml-sm"
               icon="eva-map-outline"
               @click="mapType = 'roadmap'"
+              rounded
             />
             <q-btn
               text-color="black"
               color="grey-2 col q-mr-sm q-ml-sm"
               icon="satellite_alt"
               @click="mapType = 'satellite'"
+              rounded
             />
           </q-card-section>
         </q-card>
@@ -129,7 +141,7 @@
     </GMapMap>
 
     <q-page-sticky position="top">
-      <q-card v-if="addWindow" class="addArea">
+      <q-card v-if="addWindow" class="addArea q-pa-md">
         <q-form @submit="onSubmit" @reset="onReset" class="row">
           <div class="row">
             <q-input
@@ -143,13 +155,29 @@
                 (val) => (val && val.length > 0) || 'Please type something',
               ]"
             />
+          </div>
 
+          <div class="row">
+            <q-input
+              dense
+              class="q-mr-sm col"
+              filled
+              type="number"
+              v-model="defaultPolygon.options.fillOpacity"
+              label="Opacity-[0,1]"
+              lazy-rules
+              :rules="[
+                (val) =>
+                  (val !== null && val !== '') || 'Please type fill opacity',
+                (val) => ((val) => 0 && val <= 1) || 'Opacity betweeen 0 and 1',
+              ]"
+            />
             <q-input
               dense
               filled
               label="Stroke color"
               v-model="defaultPolygon.options.strokeColor"
-              class="colorPickerInput col"
+              class="q-mr-sm colorPickerInput col"
             >
               <template v-slot:append>
                 <q-icon name="colorize" class="cursor-pointer">
@@ -163,23 +191,6 @@
                 </q-icon>
               </template>
             </q-input>
-          </div>
-
-          <div class="row">
-            <q-input
-              dense
-              class="col"
-              filled
-              type="number"
-              v-model="age"
-              label="Fill Opacity - [0,1]"
-              lazy-rules
-              :rules="[
-                (val) =>
-                  (val !== null && val !== '') || 'Please type fill opacity',
-                (val) => ((val) => 0 && val <= 1) || 'Opacity betweeen 0 and 1',
-              ]"
-            />
 
             <q-input
               dense
@@ -208,7 +219,7 @@
           >
             <q-input
               dense
-              class="col"
+              class="q-mr-sm col-4"
               filled
               type="number"
               v-model="path.lat"
@@ -217,7 +228,7 @@
 
             <q-input
               dense
-              class="col"
+              class="q-mr-sm col-4"
               filled
               type="number"
               v-model="path.lng"
@@ -226,36 +237,46 @@
 
             <q-btn
               @click="setPath(i, latAddition, lngAddition)"
-              class="q-mr-lg roundCorners col"
-              label="SET"
-              color="secondary"
+              class="q-mr-lg roundCorners col-2"
+              color="grey-2"
+              text-color="black"
+              rounded
+              icon="eva-checkmark-circle-outline"
             />
           </div>
         </q-form>
 
-        <q-card-actions align="right">
+        <q-card-actions class="q-mt-sm" align="right">
           <q-btn
+            v-if="(this.defaultPolygon.paths[0].lat === 0 || isChoosing)"
+            class="q-mr-lg roundCorners col"
+            label="Choose Point"
+            color="grey-2"
+            text-color="black"
+            rounded
+            disabled
+          />
+          <q-btn
+            v-else
             @click="addPath()"
             class="q-mr-lg roundCorners col"
-            :label="
-              this.defaultPolygon.paths[0].lat === 0 || isChoosing
-                ? 'Choose Point'
-                : 'Add Path'
-            "
-            color="secondary"
+            label="Add Path"
+            color="grey-2"
+            text-color="black"
+            rounded
           />
 
           <q-btn
             flat
             label="Cancel"
-            color="primary"
+            color="black"
             @click="cancelAdd()"
             v-close-popup
           />
           <q-btn
             flat
             label="Add Area"
-            color="primary"
+            color="black"
             v-close-popup
             @click="addPolygon()"
           />
@@ -431,7 +452,7 @@ export default defineComponent({
           position: { lat: 45.043549336965455, lng: 7.649626494451973 },
         },
       ],
-      polygonAddMarkers:[],
+      polygonAddMarkers: [],
       optPol: {
         strokeColor: "#0000FF",
         strokeOpacity: 0.8,
@@ -474,26 +495,29 @@ export default defineComponent({
     getMapType() {
       return this.mapType;
     },
-     
   },
 
   methods: {
-    notify (message) {
-        this.$q.notify({
-         progress: true,
-          message,
-          color: 'grey-2',
-          textColor: 'black',
-          position: 'top',
-          multiLine: true,
-          actions: [
-            { label: 'Dismiss', color: 'black', handler: () => { /* ... */ } }
-          ]
-        })
+    notify(message) {
+      this.$q.notify({
+        progress: true,
+        message,
+        color: "grey-2",
+        textColor: "black",
+        position: "top",
+        multiLine: true,
+        actions: [
+          {
+            label: "Dismiss",
+            color: "black",
+            handler: () => {
+              /* ... */
+            },
+          },
+        ],
+      });
+    },
 
-        
-      },
-   
     toHome() {
       this.$router.push("/landing");
     },
@@ -552,7 +576,6 @@ export default defineComponent({
       this.markers[0].position.lat = position.coords.latitude;
       this.markers[0].position.lng = position.coords.longitude;
 
-
       // for (let i = 0; i < this.polygons.length-1; i++) {
       //     // console.log("i - ",i)
 
@@ -563,7 +586,6 @@ export default defineComponent({
       //     //     position.coords.longitude
       //     //   ));
 
-          
       // //     // .then((res) => {
       // //     //   let isWithinPolygon = res.containsLatLng(
       // //     //     position.coords.latitude,

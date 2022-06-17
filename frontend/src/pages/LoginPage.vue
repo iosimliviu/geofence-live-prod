@@ -46,12 +46,33 @@
               class="logo col"
               alt="Employmapp"
               width="250" height="600"
-              src="../assets/app-removebg-preview.png"
+              src="../assets/app.png"
             />
           </div>
+           <q-input v-model="login.email" type="email" label="Email" />
+              <q-input
+                v-model="login.password"
+                type="password"
+                label="Password"
+              />
+              <q-btn
+                @click="this.$router.push('/');"
+                size="MD"
+                type="submit"
+                class="q-ma-lg"
+                square
+                style="color: #0267C1; background-color:white"
+                icon="eva-corner-down-right-outline"
+                label="login"
+              />
 
-<br/><br/><br/><br/>
-            <div align="center">
+              <!-- <q-btn
+                class="roundCorners"
+                color="primary q-mt-sm"
+                label="Log In"
+                size="lg"
+              /> -->
+            <!-- <div align="center">
               <q-btn
                 @click="this.$router.push('/');"
                 size="lg"
@@ -72,7 +93,7 @@
                 icon="eva-corner-down-right-outline"
                 label="LEARN MORE"
               />
-            </div>
+            </div> -->
       </q-card>
     </div>
   </q-page>

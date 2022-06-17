@@ -1,66 +1,86 @@
 <template>
-  <div class="q-pa-md">
-    <q-card dark bordered class="my-sticky-column-table bg-grey-9 my-card q-mb-lg">
-      <q-card-section>
-        <div class="text-h6">Poduction Tracker</div>
-        <div class="text-subtitle2">by Liviu Iosim</div>
-      </q-card-section>
+  <div class="bacground">
+    <div class="glass">
+      <div class="q-pa-md">
+        <q-card
+          
+          bordered
+          class="my-sticky-column-table bg-grey-2 my-card q-mb-lg"
+        >
+          <q-card-section>
+            <div class="text-h6">Gefe</div>
+          </q-card-section>
 
-      <q-separator dark inset />
+          <q-separator dark inset />
 
-      <q-card-section>
-        Scopul produsului este de a aduce valoare în echipele unde coordonarea
-        geografică este un element cheie.
-      </q-card-section>
-      <q-separator dark inset />
-      <q-card-section>
-        O aplicație centralizată, unde utilizatorii își pot creea zone special
-        desemnate pentru diferite echipe sau utilizatori, urmărind în timp real
-        locația fiecărui contribuitor
-      </q-card-section>
-      <q-separator dark inset />
-      <q-card-section>
-        Functionalitati
-        <q-list dense bordered separator padding class="rounded-borders">
-          <q-item clickable v-ripple>
-            <q-item-section>
-                - Desenarea zonelor desemnate Clasificarea în funcție de proiect și
-              utilizator
-            </q-item-section>
-          </q-item>
+          <q-card-section>
+            Scopul produsului este de a aduce valoare în echipele unde
+            coordonarea geografică este un element cheie.
+          </q-card-section>
+          <q-separator dark inset />
 
-          <q-item clickable v-ripple>
-            <q-item-section>
-              - Notificări informative despre poziția
-            </q-item-section>
-          </q-item>
+          <q-card-section>
+            <q-video
+              class="video"
+              :ratio="16 / 9"
+              src="https://www.youtube.com/embed/NpEaa2P7qZI?rel=0"
+            />
+          </q-card-section>
+          <q-separator dark inset />
+          <q-card-section>
+            Aplicația adresează inconsecvențele în organizarea producților live
+            permițând întregului echipaj să aibe o imagine de ansamblu asupra
+            evenimentului. Cu ajutorul elementelor de geolocalizare aceștia se
+            pot grupa în zone delimitate pe harta respectivului proiect.
+            Produsul este folositor pentru companiile unde timpul, distanța și
+            precizia reprezintă o prioritate.
+          </q-card-section>
+          <q-separator dark inset />
+          <q-card-section>
+            Functionalitati
+            <q-list dense bordered separator padding class="rounded-borders">
+              <q-item clickable v-ripple>
+                <q-item-section>
+                  - Desenarea zonelor desemnate Clasificarea în funcție de
+                  proiect și utilizator
+                </q-item-section>
+              </q-item>
 
-          <q-item clickable v-ripple>
-            <q-item-section>
-             -  Customizarea si controlarea hărții afișate
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-card-section>
-    </q-card>
+              <q-item clickable v-ripple>
+                <q-item-section>
+                  - Notificări informative despre poziția
+                </q-item-section>
+              </q-item>
 
-    <q-table
-      title="Pricing"
-      :rows="rows"
-      :columns="columns"
-      row-key="name"
-      class="my-sticky-column-table"
-    />
+              <q-item clickable v-ripple>
+                <q-item-section>
+                  - Customizarea si controlarea hărții afișate
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+        </q-card>
 
-    <q-page-sticky position="top-right" :offset="[21, 21]">
-      <q-btn
-        round
-        color="grey-2"
-        text-color="black"
-        icon="eva-home-outline"
-        @click="this.$router.push('/landing')"
-      />
-    </q-page-sticky>
+        <q-table
+          title="Pricing"
+          :rows="rows"
+          :columns="columns"
+          row-key="name"
+          class="my-sticky-column-table"
+        />
+
+        <q-page-sticky class="menu" position="top-left" :offset="[18, 18]">
+        <q-btn
+          style="margin-right: 10px"
+          text-color="black"
+          color="grey-2"
+          rounded
+          disabled
+          >info Page</q-btn
+        >
+      </q-page-sticky>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -138,17 +158,32 @@ export default {
 
 <style lang="sass">
 .my-sticky-column-table
-    max-width: 600px
+  max-width: 600px
 
 thead tr:first-child th:first-child
-    background-color: #fff
+  background-color: #fff
 
 td:first-child
-    background-color: #919cff
+  background-color: #919cff
 
 th:first-child,
 td:first-child
-    position: sticky
-    left: 0
-    z-index: 1
+  position: sticky
+  left: 0
+  z-index: 1
+
+.bacground 
+  background-image: url("../assets/Back.png")
+  background-size: 99%
+  background-repeat: repeat-y
+
+
+
+.glass 
+  padding-top: 20%
+  backdrop-filter: blur(16px) saturate(180%)
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important
+  border: 1px solid rgba(255, 255, 255, 0.125)
+  
+
 </style>
